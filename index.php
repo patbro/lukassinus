@@ -165,7 +165,6 @@
 				series: [{
 					name: 'Liefdesleven Lukas',
 					data: [<?php echo $series["lukas"]; ?>],
-                  	visible: false
 				}, {
                   	name: 'Liefdesleven Tom',
 				  	data: [<?php echo $series["tom"]; ?>],
