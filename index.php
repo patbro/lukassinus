@@ -7,11 +7,11 @@
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       	if (isset($_POST['person'])) {
-        	$person = $_POST['person'];  
+        	$update_person = $_POST['person'];  
         }
       	
       	if (!empty($_POST['password'])) {
-          	if ($_POST['password'] != $passwords[$person]) {
+          	if ($_POST['password'] != $passwords[$update_person]) {
                 die("Password is incorrect");
             }
 
@@ -32,7 +32,7 @@
                 die("Entered value is invalid");
             }
 
-            $myfile = fopen($person .".txt", "a") or die("Unable to open database!");
+            $myfile = fopen($update_person .".txt", "a") or die("Unable to open database!");
             $txt = "[Date.UTC(". $year .",(". $month ."-1),". $day ."), ". $_POST['value'] ."],\n";
             fwrite($myfile, $txt);
             fclose($myfile);
@@ -41,9 +41,14 @@
 
 	$series = array();
 	foreach ($persons as $person) {
-      	$myfile = fopen($person .".txt", "r") or die("Unable to open database!");
+      	$myfile = fopen($person .".txt", "r") or die("Unable to open database for ". $person);
         $db = fread($myfile, filesize($person .".txt"));
         fclose($myfile);
+
+        // If the database is empty, fill it with a zero for today, otherwise the chart malfunctions
+        if (empty($db)) {
+            $db = "[Date.UTC(". date('Y') .",". date('m') ."-1,". date('d') ."), 0],";
+        }
       
      	$series[$person] = $db; 
     }
@@ -90,12 +95,12 @@
 	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 		<header class="mb-auto">
 			<div>
-				<h3 class="float-md-start mb-0"><?php foreach($persons as $person) { if ($persons[sizeof($persons)-1] == $person) { echo 'en '. ucwords($person); } else { echo ucwords($person) .', '; } } ?> hun sinus</h3>
+				<h3 class="float-md-start mb-0"><?php foreach($persons as $person) { if (!empty($passwords[$person])) { if ($persons[sizeof($persons)-1] == $person) { echo 'en '. ucwords($person); } else { echo ucwords($person) .', '; } } } ?> hun sinus</h3>
 			</div>
 		</header>
 
 		<main class="px-3">
-            <p class="lead">De laatste status van <?php foreach($persons as $person) { if ($persons[sizeof($persons)-1] == $person) { echo 'en '. ucwords($person); } else { echo ucwords($person) .', '; } } ?> hun sinus a.k.a. liefdesleven wordt nauwlettend bijgehouden. Zodra er nieuws is, zullen ze een nieuwe waarde toevoegen. Zal de grafiek de vorm van een sinus aanhouden?</p>
+            <p class="lead">De laatste status van <?php foreach($persons as $person) { if (!empty($passwords[$person])) { if ($persons[sizeof($persons)-1] == $person) { echo 'en '. ucwords($person); } else { echo ucwords($person) .', '; } } } ?> hun sinus a.k.a. liefdesleven wordt nauwlettend bijgehouden. Zodra er nieuws is, zullen ze een nieuwe waarde toevoegen. Zal de grafiek de vorm van een sinus aanhouden?</p>
 			<p class="text-muted">Vroeger stond hier alleen de sinus van Lukas, vandaar lukassinus.xyz :)</p>
 			<div id="container" style="width:100%; height:500px;"></div>
 		</main>
@@ -104,9 +109,17 @@
 			<p>
 				<form method="post" action="" id="form">
                   	<select name="person">
-                        <option value="lukas"<?php if($person == "lukas") { echo ' selected'; } ?>>Lukas</option>
-                        <option value="tom"<?php if($person == "tom") { echo ' selected'; } ?>>Tom</option>
-                        <option value="niels"<?php if($person == "niels") { echo ' selected'; } ?>>Niels</option>
+					  	<?php 
+							foreach($persons as $person) { 
+								if (!empty($passwords[$person])) { 
+									echo '<option value="'. $person .'"';
+									if (isset($update_person) && $update_person == $person) {
+										echo ' selected';
+									}
+									echo '>'. ucwords($person) .'</option>';
+								}
+							}
+						?>
                     </select><br /><br />
 					<input type="password" name="password" placeholder="Password" /><br />
 					<input type="text" name="date" placeholder="d-m-Y" /> 
@@ -163,17 +176,26 @@
                     }
 				},
 				series: [{
-					name: 'Liefdesleven Lukas',
-					data: [<?php echo $series["lukas"]; ?>],
+					name: 'Carlo (Lukas)',
+					data: [<?php echo $series["carlo"]; ?>],
+					visible: false
 				}, {
-                  	name: 'Liefdesleven Tom',
-				  	data: [<?php echo $series["tom"]; ?>],
-                  	color: '#ff0000'
-                }, {
-                  	name: 'Liefdesleven Niels',
-				  	data: [<?php echo $series["niels"]; ?>],
-                  	color: '#ffff00'
-                }]
+					name: 'Scharrel (Lukas)',
+					data: [<?php echo $series["lukas"]; ?>],
+					color: '#0000FF'
+				}, {
+					name: 'Fleur (Tom)',
+					data: [<?php echo $series["tom"]; ?>],
+					color: '#ff0000'
+				}, {
+					name: 'Vera (Niels)',
+					data: [<?php echo $series["niels"]; ?>],
+					color: '#ffff00'
+				}, {
+					name: 'Scharrel (Stef)',
+					data: [<?php echo $series["stef"]; ?>],
+					color: '#00ff00'
+				}]
 			});
 		});
 	</script>
