@@ -33,13 +33,17 @@
             $date_array = explode('-', $_POST['date']);
             if (count($date_array) == 3) {
                 if (!checkdate($date_array[1], $date_array[0], $date_array[2])) {
-                    die("Entered date is invalid");
+                    die("Entered date is invalid (format should be: d-m-Y)");
 				}
             } else {
-                die("Entered date is invalid");
+                die("Entered date is invalid (format should be: d-m-Y)");
             }
 
             $year = date('Y', strtotime($_POST['date']));
+            if ($year < "2022") {
+                die("The year you entered is bullshit!");
+            }
+
             $month = date('m', strtotime($_POST['date']));
             $day = date('d', strtotime($_POST['date']));
 
