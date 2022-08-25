@@ -258,6 +258,10 @@
 					name: 'Hanna (Jan-Felix)',
 					data: [<?php echo $series["jan-Felix"]; ?>],
 					color: '#7b32a8'
+				}, {
+					name: 'Scharrel (Stijn)',
+					data: [<?php echo $series["stijn"]; ?>],
+					color: '#ffa500'
 				}]
 			});
 		});
