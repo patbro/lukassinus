@@ -72,13 +72,13 @@
 			// Output one line until end-of-file
 			while(!feof($myfile)) {
   				$pieces = explode(",", fgets($myfile));
-				$mail->addAddress($pieces[0], $pieces[1]);
+				$mail->addBcc($pieces[0], $pieces[1]);
 			}
 			fclose($myfile);
 
 			$mail->CharSet = PHPMailer::CHARSET_UTF8;
 			$mail->Subject = 'LUKAS SINUS ALARMMMMM!!';
-			$mail->Body = "Iemand heeft een nieuwe waarde toegevoegd op www.lukassinus.xyz \n\nGa snel naar de website om te checken hoe dit liefdesverhaal afgelopen is!";
+			$mail->Body = ucwords($update_person) ." heeft een nieuwe waarde toegevoegd op www.lukassinus.xyz \n\nGa snel naar de website om te checken hoe dit liefdesverhaal afgelopen is!";
 
 			//send the message, check for errors
 			if (!$mail->send()) {
@@ -262,7 +262,11 @@
 					name: 'Scharrel (Stijn)',
 					data: [<?php echo $series["stijn"]; ?>],
 					color: '#ffa500'
-				}]
+				}, {
+					name: 'Jara (Jose)', 
+					data: [<?php echo $series["jose"]; ?>], 
+					color: '#a500ff'
+                }]
 			});
 		});
 	</script>
