@@ -47,6 +47,10 @@
             $month = date('m', strtotime($_POST['date']));
             $day = date('d', strtotime($_POST['date']));
 
+			if (strtotime($_POST['date']) > strtotime(date('d-m-Y'))) {
+				die("You shall not predict the future!");
+			}
+
             if (!is_numeric($_POST['value'])) {
                 die("Entered value is not numeric");
             }
